@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Typing Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      width: 600px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    #text {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+    .stats {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Typing Test</h2>
+    <p id="text"></p>
+    <textarea id="input" placeholder="Start typing..."></textarea>
+    <div class="stats">
+      <span id="time">Time: 0s</span>
+      <span id="wpm">WPM: 0</span>
+    </div>
+    <button onclick="resetTest()">Restart</button>
+  </div>
+
+  <script>
+    const textSamples = [
+      "The quick brown fox jumps over the lazy dog.",
+      "Typing fast requires practice and patience.",
+      "JavaScript makes websites interactive and fun.",
+      "Coding daily improves your problem solving skills."
+    ];
+
+    let startTime, timerInterval;
+
+    const textEl = document.getElementById('text');
+    const inputEl = document.getElementById('input');
+    const timeEl = document.getElementById('time');
+    const wpmEl = document.getElementById('wpm');
+
+    function startTest() {
+      const randomText = textSamples[Math.floor(Math.random() * textSamples.length)];
+      textEl.textContent = randomText;
+      inputEl.value = '';
+      startTime = new Date();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTime, 1000);
+    }
+
+    function updateTime() {
+      const elapsed = Math.floor((new Date() - startTime) / 1000);
+      timeEl.textContent = `Time: ${elapsed}s`;
+    }
+
+    inputEl.addEventListener('input', () => {
+      const text = textEl.textContent;
+      const input = inputEl.value;
+
+      if (!startTime) startTest();
+
+      if (input === text) {
+        clearInterval(timerInterval);
+        calculateWPM();
+      }
+    });
+
+    function calculateWPM() {
+      const timeTaken = (new Date() - startTime) / 60000;
+      const wordCount = textEl.textContent.split(' ').length;
+      const wpm = Math.round(wordCount / timeTaken);
+      wpmEl.textContent = `WPM: ${wpm}`;
+    }
+
+    function resetTest() {
+      startTime = null;
+      timeEl.textContent = 'Time: 0s';
+      wpmEl.textContent = 'WPM: 0';
+      startTest();
+    }
+
+    startTest();
+  </script>
+</body>
+</html>
